@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
-// 1. Import the Providers component
-import { Providers } from "@/components/shared/Providers"; 
+import { Providers } from "@/components/shared/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +14,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Page metadata
 export const metadata: Metadata = {
   title: "TradingToken",
   description: "Track & analyse top trading tokens",
+};
+
+// ⭐ ADD THIS FOR MOBILE RESPONSIVENESS
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -30,14 +36,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-white min-h-screen flex flex-col`}
       >
-        {/* 2. WRAP EVERYTHING INSIDE <Providers> */}
         <Providers>
           <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
         </Providers>
-        {/* End of Providers wrapper */}
       </body>
     </html>
   );

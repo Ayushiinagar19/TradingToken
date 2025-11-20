@@ -1,170 +1,179 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
 import { logout } from "@/store/authSlice";
 import { LoginModal } from "./LoginModal";
 import { SignupModal } from "./SignupModal";
 import { Button } from "@/components/ui/button";
-import { 
+
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  Search, 
-  Settings, 
-  Star, 
-  ChevronDown, 
-  Wallet, 
+
+import {
+  Search,
+  Settings,
+  Star,
+  ChevronDown,
+  Wallet,
   Menu,
+  X,
   User,
   Languages,
   Rocket,
-  LogOut
+  LogOut,
 } from "lucide-react";
 
 export default function Navbar() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // =========================================================
-  // SCENARIO 1: DASHBOARD NAVBAR (LOGGED IN)
+  // SCENARIO 1: LOGGED IN NAVBAR
   // =========================================================
+
   if (isAuthenticated) {
     return (
-      <nav className="sticky top-0 z-50 w-full bg-[#0B0E14] border-b border-slate-800 h-16 flex items-center px-4 lg:px-6">
-        
-        {/* Left: Logo & Main Nav */}
-        <div className="flex items-center gap-8 flex-1">
+      <nav className="sticky top-0 z-50 w-full bg-[#0B0E14] border-b border-slate-800">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
           
-          {/* Logo */}
-          <Link href="/" className="text-xl font-bold text-white tracking-tight whitespace-nowrap">
-            Trading<span className="text-blue-500">Token</span>
-          </Link>
+          {/* LEFT SECTION */}
+          <div className="flex items-center gap-4 flex-1">
+            {/* Logo */}
+            <Link href="/" className="text-xl font-bold whitespace-nowrap">
+              Trading<span className="text-blue-500">Token</span>
+            </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-400">
-            <Link href="#" className="text-blue-400 font-semibold hover:text-blue-300">Discover</Link>
-            <Link href="#" className="hover:text-white transition-colors">Pulse</Link>
-            <Link href="#" className="hover:text-white transition-colors">Trackers</Link>
-            <Link href="#" className="hover:text-white transition-colors">Perpetuals</Link>
-            <Link href="#" className="hover:text-white transition-colors">Yield</Link>
-            <Link href="#" className="hover:text-white transition-colors">Vision</Link>
-            <Link href="#" className="hover:text-white transition-colors">Portfolio</Link>
-            <Link href="#" className="hover:text-white transition-colors">Rewards</Link>
-          </div>
-        </div>
-
-        {/* Right: Tools & Wallet */}
-        <div className="flex items-center gap-3">
-          
-          {/* Search Icon */}
-          <button className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition">
-            <Search size={18} />
-          </button>
-
-          {/* Network Selector (SOL) */}
-          <div className="hidden md:flex items-center gap-2 bg-[#151921] hover:bg-slate-800 border border-slate-800 rounded-full px-3 py-1.5 cursor-pointer transition">
-            <div className="h-4 w-4 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500"></div>
-            <span className="text-sm font-medium text-white">SOL</span>
-            <ChevronDown size={14} className="text-slate-500" />
+            {/* Desktop navigation */}
+            <div className="hidden lg:flex items-center gap-4 text-sm text-slate-400">
+              <Link href="#" className="text-blue-400 font-semibold">Discover</Link>
+              <Link href="#">Pulse</Link>
+              <Link href="#">Trackers</Link>
+              <Link href="#">Perpetuals</Link>
+              <Link href="#">Yield</Link>
+              <Link href="#">Vision</Link>
+              <Link href="#">Portfolio</Link>
+              <Link href="#">Rewards</Link>
+            </div>
           </div>
 
-          {/* Deposit Button */}
-          <Button className="bg-[#4F46E5] hover:bg-[#4338ca] text-white rounded-full px-5 h-9 text-sm font-semibold">
-            Deposit
-          </Button>
+          {/* RIGHT SECTION */}
+          <div className="flex items-center gap-3">
+            {/* Search */}
+            <button className="p-2 text-slate-400 hover:text-white">
+              <Search size={18} />
+            </button>
 
-          {/* Star / Favorites */}
-          <button className="p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition hidden sm:block">
-            <Star size={18} />
-          </button>
-
-          {/* Wallet / Profile Menu */}
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-800 ml-1">
-             {/* Wallet Balance Pill */}
-            <div className="hidden md:flex items-center gap-2 bg-[#151921] border border-slate-800 rounded-full px-3 py-1.5">
-               <Wallet size={14} className="text-slate-400" />
-               <span className="text-xs font-mono text-white">0 SOL</span>
-               <div className="h-2 w-2 rounded-full bg-green-500"></div>
+            {/* Network (SOL) */}
+            <div className="hidden md:flex items-center gap-2 bg-[#151921] px-3 py-1.5 rounded-full border border-slate-700">
+              <div className="h-3 w-3 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500" />
+              <span className="text-sm">SOL</span>
+              <ChevronDown size={14} />
             </div>
 
-            {/* --- SETTINGS DROPDOWN MENU --- */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                    variant="ghost" 
-                    size="icon"
-                    className="text-slate-400 hover:text-white hover:bg-slate-800 rounded-full h-9 w-9 outline-none"
-                >
-                   <Settings size={18} />
-                </Button>
-              </DropdownMenuTrigger>
-              
-              <DropdownMenuContent align="end" className="w-56 bg-[#1A1D21] border-slate-800 text-slate-200 rounded-xl p-2 shadow-2xl">
-                
-                <DropdownMenuItem className="focus:bg-slate-800 focus:text-white cursor-pointer rounded-lg gap-3 py-2.5 text-sm font-medium">
-                  <User size={16} />
-                  <span>Account and Security</span>
-                </DropdownMenuItem>
-                
-                <DropdownMenuItem className="focus:bg-slate-800 focus:text-white cursor-pointer rounded-lg gap-3 py-2.5 text-sm font-medium">
-                  <Languages size={16} />
-                  <span>Auto Translate</span>
-                </DropdownMenuItem>
-                
-                <DropdownMenuItem className="focus:bg-slate-800 focus:text-white cursor-pointer rounded-lg gap-3 py-2.5 text-sm font-medium">
-                  <Rocket size={16} />
-                  <span>Feature Updates</span>
-                </DropdownMenuItem>
-                
-                <DropdownMenuSeparator className="bg-slate-800 my-1" />
-                
-                <DropdownMenuItem 
-                  onClick={() => dispatch(logout())}
-                  className="focus:bg-red-500/10 focus:text-red-400 text-red-400 cursor-pointer rounded-lg gap-3 py-2.5 text-sm font-medium"
-                >
-                  <LogOut size={16} />
-                  <span>Log Out</span>
-                </DropdownMenuItem>
-                
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Deposit */}
+            <Button className="bg-indigo-600 hover:bg-indigo-500 rounded-full px-4 h-9 text-sm">
+              Deposit
+            </Button>
 
+            {/* Favorites */}
+            <button className="hidden sm:block p-2 text-slate-400 hover:text-white">
+              <Star size={18} />
+            </button>
+
+            {/* Wallet + Settings */}
+            <div className="hidden md:flex items-center gap-3 pl-3 border-l border-slate-800">
+              {/* Wallet pill */}
+              <div className="flex items-center gap-2 bg-[#151921] px-3 py-1.5 rounded-full border border-slate-700">
+                <Wallet size={14} />
+                <span className="text-xs">0 SOL</span>
+                <div className="h-2 w-2 rounded-full bg-green-500" />
+              </div>
+
+              {/* Settings Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Settings size={18} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 bg-[#1A1D21] border-slate-700 rounded-xl p-2"
+                >
+                  <DropdownMenuItem className="gap-3">
+                    <User size={16} /> Account and Security
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="gap-3">
+                    <Languages size={16} /> Auto Translate
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="gap-3">
+                    <Rocket size={16} /> Feature Updates
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => dispatch(logout())}
+                    className="text-red-400 gap-3"
+                  >
+                    <LogOut size={16} /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="lg:hidden p-2 text-slate-300"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
           </div>
-
-          {/* Mobile Menu Toggle */}
-          <button className="lg:hidden p-2 text-slate-400">
-            <Menu size={24} />
-          </button>
-
         </div>
+
+        {/* MOBILE MENU (Logged In) */}
+        {mobileOpen && (
+          <div className="lg:hidden bg-[#0B0E14] border-t border-slate-800 px-4 py-4 flex flex-col gap-4">
+            <Link href="#" onClick={() => setMobileOpen(false)}>Discover</Link>
+            <Link href="#" onClick={() => setMobileOpen(false)}>Pulse</Link>
+            <Link href="#" onClick={() => setMobileOpen(false)}>Trackers</Link>
+            <Link href="#" onClick={() => setMobileOpen(false)}>Portfolio</Link>
+            <Link href="#" onClick={() => setMobileOpen(false)}>Rewards</Link>
+
+            <Button
+              onClick={() => dispatch(logout())}
+              className="w-full bg-red-600 hover:bg-red-500"
+            >
+              Logout
+            </Button>
+          </div>
+        )}
       </nav>
     );
   }
 
   // =========================================================
-  // SCENARIO 2: LANDING NAVBAR (LOGGED OUT)
+  // LOGGED OUT NAVBAR
   // =========================================================
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 h-20">
-        
-        {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-white tracking-tight">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16">
+        <Link href="/" className="text-2xl font-bold">
           Trading<span className="text-blue-500">Token</span>
         </Link>
 
-        {/* Right Side: Auth Buttons */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            <LoginModal /> 
-            <SignupModal />
-          </div>
+        <div className="flex items-center gap-3">
+          <LoginModal />
+          <SignupModal />
         </div>
       </div>
     </nav>
